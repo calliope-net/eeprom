@@ -1,7 +1,7 @@
 
 //% color=#FF7F3F icon="\uf2db" block="EEPROM Qwiic" weight=14
 namespace eepromCAT24C512
-/* 230825
+/* 230826
 https://www.sparkfun.com/products/18355
 [Datasheet] https://www.onsemi.com/pub/Collateral/CAT24C512-D.PDF
 https://learn.sparkfun.com/tutorials/qwiic-eeprom-hookup-guide
@@ -40,13 +40,14 @@ das wird in der function write alles berücksichtigt
     const poll_for_write_complete = false // true
     const addressSize_bytes = 2
 
+    // TODO
     function is_connected(pADDR: eADDR) { return true }
 
     function is_busy(pADDR: eADDR) { return !is_connected(pADDR) }
 
 
     //% group="EEPROM 512 Page-Adressen je 128 Byte"
-    //% block="Page %x3 %x2 %x1" weight=94
+    //% block="Page %x3 %x2 %x1"
     export function page(x4: H4, x3: H3, x2: H2) {
         return x4 + x3 + x2
     }
@@ -55,9 +56,9 @@ das wird in der function write alles berücksichtigt
     // ========== group="i2c EEPROM lesen (Adr: 0 ... 65535)"
 
     //% group="i2c EEPROM lesen (Adr: 0 ... 65535)"
-    //% block="i2c %pADDR Adr %eeprom_location 1 Byte lesen" weight=88
+    //% block="i2c %pADDR Adr %eeprom_location 1 Byte lesen" weight=8
     //% eeprom_location.min=0 eeprom_location.max=65535
-    export function read_byte(pADDR: eADDR, eeprom_location: number) {
+    export function read_byte(pADDR: eADDR, eeprom_location: number): number {
         let bu = pins.createBuffer(2)
         bu.setNumber(NumberFormat.UInt16BE, 0, eeprom_location)
         pins.i2cWriteBuffer(pADDR, bu, true)
@@ -65,9 +66,9 @@ das wird in der function write alles berücksichtigt
     }
 
     //% group="i2c EEPROM lesen (Adr: 0 ... 65535)" advanced=true
-    //% block="i2c %pADDR Adr %eeprom_location 1 Zahl %format lesen" weight=86
+    //% block="i2c %pADDR Adr %eeprom_location 1 Zahl %format lesen" weight=6
     //% eeprom_location.min=0 eeprom_location.max=65535 format.defl=NumberFormat.UInt16BE
-    export function read_number(pADDR: eADDR, eeprom_location: number, format: NumberFormat) {
+    export function read_number(pADDR: eADDR, eeprom_location: number, format: NumberFormat): number {
         let bu = pins.createBuffer(2)
         bu.setNumber(NumberFormat.UInt16BE, 0, eeprom_location)
         pins.i2cWriteBuffer(pADDR, bu, true)
@@ -75,25 +76,25 @@ das wird in der function write alles berücksichtigt
     }
 
     //% group="i2c EEPROM lesen (Adr: 0 ... 65535)"
-    //% block="i2c %pADDR Adr %eeprom_location Text %string_length Zeichen lesen" weight=84
+    //% block="i2c %pADDR Adr %eeprom_location Text %string_length Zeichen lesen" weight=4
     //% eeprom_location.min=0 eeprom_location.max=65535 string_length.defl=32
-    export function read_string(pADDR: eADDR, eeprom_location: number, string_length: number) {
+    export function read_string(pADDR: eADDR, eeprom_location: number, string_length: number): string {
         return read_buffer(pADDR, eeprom_location, string_length).toString()
     }
 
     //% group="i2c EEPROM lesen (Adr: 0 ... 65535)"
-    //% block="i2c %pADDR Adr %eeprom_location Array %num_bytes max 32 Byte lesen" weight=82
+    //% block="i2c %pADDR Adr %eeprom_location Array %num_bytes max 32 Byte lesen" weight=2
     //% eeprom_location.min=0 eeprom_location.max=65535 
     //% num_bytes.min=1 num_bytes.max=32 num_bytes.defl=32
-    export function read(pADDR: eADDR, eeprom_location: number, num_bytes: number) {
+    export function read_array(pADDR: eADDR, eeprom_location: number, num_bytes: number): number[] {
         return read_buffer(pADDR, eeprom_location, num_bytes).toArray(NumberFormat.Int8LE)
     }
 
     //% group="i2c EEPROM lesen (Adr: 0 ... 65535)" advanced=true
-    //% block="i2c %pADDR Adr %eeprom_location Buffer %num_bytes Bytes lesen" weight=80
+    //% block="i2c %pADDR Adr %eeprom_location Buffer %num_bytes Bytes lesen" weight=1
     //% eeprom_location.min=0 eeprom_location.max=65535
     //% num_bytes.min=1 num_bytes.defl=32
-    export function read_buffer(pADDR: eADDR, eeprom_location: number, num_bytes: number):Buffer {
+    export function read_buffer(pADDR: eADDR, eeprom_location: number, num_bytes: number): Buffer {
         let received: number = 0
         let data_buffer: Buffer = pins.createBuffer(0) //, data_list: number[] = []
         let amount_to_read: number
@@ -123,10 +124,11 @@ das wird in der function write alles berücksichtigt
     }
 
 
+
     // ========== group="i2c EEPROM schreiben (Adr: 0 ... 65535)"
 
     //% group="i2c EEPROM schreiben (Adr: 0 ... 65535)"
-    //% block="i2c %pADDR Adr %eeprom_location 1 Byte %byte_to_write schreiben" weight=78
+    //% block="i2c %pADDR Adr %eeprom_location 1 Byte %byte_to_write schreiben" weight=8
     //% eeprom_location.min=0 eeprom_location.max=65535
     export function write_byte(pADDR: eADDR, eeprom_location: number, byte_to_write: number) {
         if (read_byte(pADDR, eeprom_location) != byte_to_write) { // Update only if data is new
@@ -138,7 +140,7 @@ das wird in der function write alles berücksichtigt
     }
 
     //% group="i2c EEPROM schreiben (Adr: 0 ... 65535)" advanced=true
-    //% block="i2c %pADDR Adr %eeprom_location 1 Zahl %value %format schreiben" weight=76
+    //% block="i2c %pADDR Adr %eeprom_location 1 Zahl %value %format schreiben" weight=6
     //% eeprom_location.min=0 eeprom_location.max=65535 format.defl=NumberFormat.UInt16BE
     //% inlineInputMode=inline
     export function write_number(pADDR: eADDR, eeprom_location: number, value: number, format: NumberFormat) {
@@ -151,7 +153,7 @@ das wird in der function write alles berücksichtigt
     }
 
     //% group="i2c EEPROM schreiben (Adr: 0 ... 65535)"
-    //% block="i2c %pADDR Adr %eeprom_location Text %string_to_write schreiben" weight=74
+    //% block="i2c %pADDR Adr %eeprom_location Text %string_to_write schreiben" weight=4
     //% eeprom_location.min=0 eeprom_location.max=65535 
     //% inlineInputMode=inline
     export function write_string(pADDR: eADDR, eeprom_location: number, string_to_write: string) {
@@ -163,9 +165,9 @@ das wird in der function write alles berücksichtigt
     }
 
     //% group="i2c EEPROM schreiben (Adr: 0 ... 65535)"
-    //% block="i2c %pADDR Adr %eeprom_location %data_list max 32 Byte schreiben" weight=72
+    //% block="i2c %pADDR Adr %eeprom_location %data_list max 32 Byte schreiben" weight=2
     //% eeprom_location.min=0 eeprom_location.max=65535
-    export function write(pADDR: eADDR, eeprom_location: number, data_list: number[]) {
+    export function write_array(pADDR: eADDR, eeprom_location: number, data_list: number[]) {
         let bu = pins.createBuffer(data_list.length)
         for (let i = 0; i < bu.length; i++) {
             bu.setUint8(i, data_list.get(i))
@@ -174,7 +176,7 @@ das wird in der function write alles berücksichtigt
     }
 
     //% group="i2c EEPROM schreiben (Adr: 0 ... 65535)" advanced=true
-    //% block="i2c %pADDR Adr %eeprom_location %data_list Buffer schreiben" weight=70
+    //% block="i2c %pADDR Adr %eeprom_location %data_list Buffer schreiben" weight=1
     //% eeprom_location.min=0 eeprom_location.max=65535
     export function write_buffer(pADDR: eADDR, eeprom_location: number, data_list: Buffer) {
         let buffer_size: number = data_list.length
@@ -251,10 +253,24 @@ das wird in der function write alles berücksichtigt
 
 
     // ========== advanced=true
+
+
+    // ========== group="i2c EEPROM Page löschen (128 Byte)"
+
+    //% group="i2c EEPROM Page löschen (128 Byte)" advanced=true
+    //% block="i2c %pADDR Page %x3 %x2 %x1 löschen mit Byte %to_write" weight=6
+    //% to_write.min=0 to_write.max=255 to_write.defl=255
+    //% inlineInputMode=inline
+    export function erasePage(pADDR: eADDR, x4: H4, x3: H3, x2: H2, to_write: number) {
+        let bu = Buffer.create(page_size_bytes)
+        bu.fill(to_write)
+        write_buffer(pADDR, x4 + x3 + x2, bu)
+    }
+
     // ========== group="i2c EEPROM löschen"
 
     //% group="i2c EEPROM löschen" advanced=true
-    //% block="i2c %pADDR löschen mit Byte %to_write"
+    //% block="i2c %pADDR löschen mit Byte %to_write" weight=4
     /* export function erase(pADDR: eADDR, to_write: number) { // Erase entire EEPROM.
         // hier werden 4096 mal 16 Byte (+ davor 2 Byte Adresse = 18 Byte) geschrieben
         // damit wird die I2C_BUFFER_LENGTH = 32 Bytes nicht überschritten
@@ -271,37 +287,22 @@ das wird in der function write alles berücksichtigt
         }
     } */
 
-    //% group="i2c EEPROM Page löschen (128 Byte)" advanced=true
-    //% block="i2c %pADDR Page %x3 %x2 %x1 löschen mit Byte %to_write" weight=26
-    //% to_write.min=0 to_write.max=255 to_write.defl=255
-    //% inlineInputMode=inline
-    export function erasePage(pADDR: eADDR, x4: H4, x3: H3, x2: H2, to_write: number) {
-        let bu = pins.createBuffer(page_size_bytes)
-        bu.fill(to_write)
-        write_buffer(pADDR, x4 + x3 + x2, bu)
-    }
 
-
-    //% group="i2c EEPROM Test" advanced=true
-    //% block="testWrite"
-    /* export function testWrite() {
-        let s = ""
-        for (let i = 0; i <= 94; i++) {
-            //write_string(pADDR, eeprom_location, s + String.fromCharCode(13) + String.fromCharCode(10))
-            s = s + String.fromCharCode(i + 33)
-        }
-        return s
-    } */
-
+    // ========== group="Fortgeschritten"
 
     //% group="Fortgeschritten" advanced=true
-    //% block="i2c Adresse von Modul %pADDR" weight=22
+    //% block="i2c Adresse von Modul %pADDR" weight=4
     export function i2cAdressen(pADDR: eADDR): number { return pADDR }
-
 
     //% group="Fortgeschritten" advanced=true
     //% block="Anzahl Bytes von %format" weight=20
-    export function sizeOf(format: NumberFormat): number { return pins.sizeOf(format) }
+    /* export function sizeOf(format: NumberFormat): number { return pins.sizeOf(format) } */
+
+    //% group="Fortgeschritten" advanced=true
+    //% block="sizeOfNumberFormat %format" weight=2
+    //% format.defl=NumberFormat.UInt8LE
+    export function sizeOfNumberFormat(format: NumberFormat): 0 | 4 | 2 | 1 | 8 { return Buffer.sizeOfNumberFormat(format) }
+
 
 
     // HEX Parameter

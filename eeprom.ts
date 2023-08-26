@@ -292,6 +292,9 @@ das wird in der function write alles berücksichtigt
     export function i2cAdressen(pADDR: eADDR): number { return pADDR }
 
 
+    //% group="Buffer" advanced=true
+    //% block="Anzahl Bytes von %format" weight=20
+    export function sizeOf(format: NumberFormat): number { return pins.sizeOf(format) }
 
 
     // HEX Parameter

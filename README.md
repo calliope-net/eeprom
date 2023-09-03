@@ -15,9 +15,6 @@ Dieses Repository kann als **Erweiterung** in MakeCode hinzugefügt werden.
 * kopiere die folgende **Projekt-URL** in die Zwischenablage (Strg-C)
 * **calliope-net/eeprom**
 * füge sie auf der Webseite oben ein (Strg-V) und klicke auf die Lupe (oder ENTER)
-
-![](erweiterung-laden.png)
-
 * wenn die Erweiterung gefunden wurde, klicke auf das Rechteck
 * jetzt hat die Liste den neuen Eintrag **EEPROM** bekommen
 

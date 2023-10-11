@@ -1,5 +1,5 @@
 
-//% color=#FF7F3F icon="\uf2db" block="EEPROM Qwiic" weight=14
+//% color=#FF7F3F icon="\uf2db" block="EEPROM" weight=14
 namespace eepromCAT24C512
 /* 230826 231011 https://github.com/calliope-net/eeprom
 https://www.sparkfun.com/products/18355
